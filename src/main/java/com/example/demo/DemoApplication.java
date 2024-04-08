@@ -9,7 +9,7 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext run = SpringApplication.run(DemoApplication.class, args);
-		System.out.println("ab");
+		System.out.println("assssb");
 	}
 
 }
