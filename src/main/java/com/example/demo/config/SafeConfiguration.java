@@ -7,8 +7,12 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
@@ -24,9 +28,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.example.demo.security.filter.CommonUserNamePasswordFilter;
+import com.example.demo.security.hadnler.AccessDenyExceptionHandler;
+import com.example.demo.security.hadnler.AuthenticationExceptionHandler;
+import com.example.demo.security.provider.MyDaoAuthenticationProvider;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -37,70 +47,28 @@ import jakarta.servlet.ServletResponse;
 @Configuration
 @EnableWebSecurity
 public class SafeConfiguration {
+
+    String [] writeList = {"/test/**"};
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsService() {
-
-            @Override
-            public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'loadUserByUsername'");
-            }
-        };
-    }
-
-    @Bean
-    public ProviderManager providerManager() throws Exception {
-        AuthenticationProvider authenticationManager = new AuthenticationProvider() {
-            @Override
-            public boolean supports(Class<?> authentication) {
-                return true;
-            }
-
-            @Override
-            public Authentication authenticate(
-                    Authentication authentication) throws AuthenticationException {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'authenticate'");
-            }
-        };
-        ProviderManager p = new ProviderManager(authenticationManager);
+    public AuthenticationManager authenticationManager() throws Exception {
+        MyDaoAuthenticationProvider daoAuthenticationProvider = new MyDaoAuthenticationProvider();
+        ProviderManager p = new ProviderManager(daoAuthenticationProvider);
         return p;
     }
-
-    /**
-     * Disable cross-site request forgery (CSRF) protection.
-     * <p>
-     * This is needed because the API Gateway does not support CSRF protection.
-     *
-     * @param httpSecurity the {@link HttpSecurity} to configure
-     * @return the {@link SecurityFilterChain}
-     * @throws Exception if an error occurs
-     */
     @Bean
-    public SecurityFilterChain configureSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain configureSecurityFilterChain(HttpSecurity httpSecurity,AuthenticationManager authenticationManager) throws Exception {
         httpSecurity.cors(CorsConfigurer::disable)
                 .sessionManagement(SessionManagementConfigurer::disable)
                 .logout(LogoutConfigurer::disable)
                 .formLogin(FormLoginConfigurer::disable)
                 .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(config -> config.requestMatchers("/test/**").permitAll()
+                .authorizeHttpRequests(config -> config.requestMatchers(writeList).permitAll()
                         .requestMatchers("/no/**").hasRole("RR")
                         // All other API endpoints require authentication.
                         .anyRequest().authenticated());
         httpSecurity.exceptionHandling(exception -> {
-            exception.authenticationEntryPoint((request, response, authException) -> {
-                // TODO Auto-generated method stub
-                response.setStatus(401);
-                response.setContentType("text/plain");
-                response.getWriter().write("？exceptionhandler");
-            });
-            exception.accessDeniedHandler((request, response, accessDeniedException) -> {
-                // TODO Auto-generated method stub
-                response.setStatus(403);
-                response.setContentType("text/plain");
-                response.getWriter().write("accessDeniedHandler");
-            });
+            exception.authenticationEntryPoint(new AuthenticationExceptionHandler());
+            exception.accessDeniedHandler(new AccessDenyExceptionHandler());
         });
         httpSecurity.addFilterBefore(new Filter() {
 
@@ -166,6 +134,7 @@ public class SafeConfiguration {
             }
             
         }, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(new CommonUserNamePasswordFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class);
         DefaultSecurityFilterChain defaultSecurityFilterChain = httpSecurity.build();
         return defaultSecurityFilterChain;
     }
