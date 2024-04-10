@@ -1,5 +1,6 @@
 package com.example.demo.security.filter;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,16 +8,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson2.JSON;
+import com.example.demo.common.CurrentUser;
 import com.example.demo.common.R;
+import com.example.demo.security.jwt.JwtService;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class CommonUserNamePasswordFilter extends AbstractAuthenticationProcessingFilter {
+@Component
+public class CommonUserNamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 
@@ -31,20 +36,22 @@ public class CommonUserNamePasswordFilter extends AbstractAuthenticationProcessi
 
 	private boolean postOnly = true;
 
-	public CommonUserNamePasswordFilter() {
+	public CommonUserNamePasswordAuthenticationFilter() {
 		super(DEFAULT_ANT_PATH_REQUEST_MATCHER);
 	}
 
-	public CommonUserNamePasswordFilter(AuthenticationManager authenticationManager) {
+	@Autowired
+	public CommonUserNamePasswordAuthenticationFilter(AuthenticationManager authenticationManager) {
 		super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
         setAuthenticationSuccessHandler((request, response, authentication) -> {
-            // TODO Auto-generated method stub
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(JSON.toJSONString(R.ok()));
+			CurrentUser currentUser = new CurrentUser();
+			currentUser.setId("id~~~~~");
+			currentUser.setName(authentication.getName());
+            response.getWriter().write(JSON.toJSONString(R.ok(JwtService.createToken(currentUser))));
          });
         setAuthenticationFailureHandler((request, response, exception) -> {
-            // TODO Auto-generated method stub
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(JSON.toJSONString(R.error("登陆失败☹️")));
