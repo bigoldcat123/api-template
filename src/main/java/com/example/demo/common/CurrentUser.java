@@ -1,5 +1,8 @@
 package com.example.demo.common;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +15,10 @@ public class CurrentUser {
     
     String id;
     String name;
+
+    public static CurrentUser get() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CurrentUser currentUser = new CurrentUser(authentication.getPrincipal().toString(),authentication.getName());
+        return currentUser;
+    }
 }
