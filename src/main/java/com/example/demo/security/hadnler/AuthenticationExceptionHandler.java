@@ -19,7 +19,7 @@ public class AuthenticationExceptionHandler implements AuthenticationEntryPoint{
             AuthenticationException authException) throws IOException, ServletException {
                 response.setStatus(200);
                 response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write(JSON.toJSONString(R.error("请先登录！")));
+                response.getWriter().write(JSON.toJSONString(R.errorShow("请先登录！")));
     }
 
 }

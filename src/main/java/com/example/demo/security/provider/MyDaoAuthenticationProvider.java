@@ -13,7 +13,7 @@ public class MyDaoAuthenticationProvider extends DaoAuthenticationProvider{
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
             // TODO Auto-generated method stub
-            return User.withUsername(username).password("$2a$10$TAew3Qi13N6ISMjsZ1pbyeF9sakocZbCBy1lEBB4McUG2yb6oQJOq").build(); 
+            return User.withUsername(username).password("$2a$10$TAew3Qi13N6ISMjsZ1pbyeF9sakocZbCBy1lEBB4McUG2yb6oQJOq").build(); // root
         }
     }
     public MyDaoAuthenticationProvider() {

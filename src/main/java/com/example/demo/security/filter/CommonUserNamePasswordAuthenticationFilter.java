@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import com.alibaba.fastjson2.JSON;
 import com.example.demo.common.CurrentUser;
+import com.example.demo.common.CurrentUserVo;
 import com.example.demo.common.R;
 import com.example.demo.security.jwt.JwtService;
 
@@ -49,12 +50,13 @@ public class CommonUserNamePasswordAuthenticationFilter extends AbstractAuthenti
 			CurrentUser currentUser = new CurrentUser();
 			currentUser.setId(authentication.getPrincipal().toString());
 			currentUser.setName(authentication.getName());
-            response.getWriter().write(JSON.toJSONString(R.ok(JwtService.createToken(currentUser))));
+			CurrentUserVo currentUserVo = new CurrentUserVo(currentUser, JwtService.createToken(currentUser));
+            response.getWriter().write(JSON.toJSONString(R.okShow(currentUserVo,R.SHOW_SUCCESS , "登陆成功")));
          });
         setAuthenticationFailureHandler((request, response, exception) -> {
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(JSON.toJSONString(R.error("登陆失败☹️")));
+            response.getWriter().write(JSON.toJSONString(R.errorShow("登陆失败☹️")));
          });
 	}
 

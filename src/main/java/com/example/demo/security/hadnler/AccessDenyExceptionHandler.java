@@ -20,7 +20,7 @@ public class AccessDenyExceptionHandler implements AccessDeniedHandler{
                 accessDeniedException.printStackTrace();
         response.setStatus(200);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(JSON.toJSONString(R.error("无权限访问！")));
+        response.getWriter().write(JSON.toJSONString(R.errorShow("无权限访问！")));
     }
 
 }

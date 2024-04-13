@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.security.config;
 
 
 import org.springframework.context.annotation.Bean;
@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.example.demo.security.filter.CommonUserNamePasswordAuthenticationFilter;
 import com.example.demo.security.filter.JwtAuthorizationFilter;
+import com.example.demo.security.filter.LogoutFilter;
 import com.example.demo.security.hadnler.AccessDenyExceptionHandler;
 import com.example.demo.security.hadnler.AuthenticationExceptionHandler;
 import com.example.demo.security.provider.MyDaoAuthenticationProvider;
@@ -36,7 +37,8 @@ public class SafeConfiguration {
     @Bean
     public SecurityFilterChain configureSecurityFilterChain(HttpSecurity httpSecurity,
         CommonUserNamePasswordAuthenticationFilter userNamePasswordAuthenticationFilter,
-        JwtAuthorizationFilter jwtAuthorizationFilter) throws Exception {
+        JwtAuthorizationFilter jwtAuthorizationFilter,
+        LogoutFilter logoutFilter) throws Exception {
         httpSecurity.cors(CorsConfigurer::disable)
                 .sessionManagement(SessionManagementConfigurer::disable)
                 .logout(LogoutConfigurer::disable)
@@ -54,6 +56,7 @@ public class SafeConfiguration {
 
         httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(userNamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(logoutFilter, JwtAuthorizationFilter.class);
         DefaultSecurityFilterChain defaultSecurityFilterChain = httpSecurity.build();
         return defaultSecurityFilterChain;
     }
