@@ -30,9 +30,9 @@ public class LogoutFilter extends OncePerRequestFilter {
         if (DEFAULT_ANT_PATH_REQUEST_MATCHER.matches(request)) {
             String jwttokenString = request.getHeader("Authorization");
             if (jwttokenString != null && jwttokenString.startsWith("Bearer ")) {
-                jwttokenString = jwttokenString.replace("Bearer ", "");
-                JwtAuthorization jwtAuthorization = new JwtAuthorization(jwttokenString);
-                jwtAuthorizationManager.verify(() -> jwtAuthorization, null);
+//                jwttokenString = jwttokenString.replace("Bearer ", "");
+//                JwtAuthorization jwtAuthorization = new JwtAuthorization(jwttokenString);
+//                jwtAuthorizationManager.verify(() -> jwtAuthorization, null);
                 response.setStatus(200);
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().write(JSON.toJSONString(R.okShow(R.SHOW_SUCCESS, "退出成功")));
