@@ -33,12 +33,13 @@ public class LogoutFilter extends OncePerRequestFilter {
 //                jwttokenString = jwttokenString.replace("Bearer ", "");
 //                JwtAuthorization jwtAuthorization = new JwtAuthorization(jwttokenString);
 //                jwtAuthorizationManager.verify(() -> jwtAuthorization, null);
+                // TODO after logout you have to do something such as websocket connection.
+                logger.error("没有清理WebSocket连接！！");
                 response.setStatus(200);
                 response.setContentType("application/json;charset=UTF-8");
                 response.getWriter().write(JSON.toJSONString(R.okShow(R.SHOW_SUCCESS, "退出成功")));
                 return;
             }
-
         }
         filterChain.doFilter(request, response);
     }

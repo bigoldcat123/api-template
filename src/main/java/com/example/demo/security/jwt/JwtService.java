@@ -14,12 +14,19 @@ public class JwtService {
     private static final SecretKey secretKey = Jwts.SIG.HS256.key().build();
 
     public static String createToken(CurrentUser currentUser) {
-        String compact = Jwts.builder().subject(JSON.toJSONString(currentUser)).signWith(secretKey).expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)).compact();
+        String compact = Jwts.builder()
+                .subject(JSON.toJSONString(currentUser))
+                .signWith(secretKey)
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .compact();
         return compact;
     }
 
     public static CurrentUser parseToken(String token) {
-        CurrentUser currentUser = JSON.parseObject(Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getSubject(), CurrentUser.class);
+        CurrentUser currentUser = JSON.parseObject(Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token).getPayload().getSubject(), CurrentUser.class);
         return currentUser;
     }
     public static void main(String[] args) {

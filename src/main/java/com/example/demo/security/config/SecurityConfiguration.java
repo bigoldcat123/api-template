@@ -25,9 +25,9 @@ import com.example.demo.security.provider.MyDaoAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
-public class SafeConfiguration {
+public class SecurityConfiguration {
 
-    String [] writeList = {"/test/**","/ws"};
+    String [] writeList = {"/ws"};
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
         MyDaoAuthenticationProvider daoAuthenticationProvider = new MyDaoAuthenticationProvider();
