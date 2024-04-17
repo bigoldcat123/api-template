@@ -1,6 +1,8 @@
 package com.example.demo.security.config;
 
 
+import com.example.demo.security.filter.MailCodeAuthenticationFilter;
+import com.example.demo.security.provider.MailCodeAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,17 +29,22 @@ import com.example.demo.security.provider.MyDaoAuthenticationProvider;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    String [] writeList = {"/ws"};
+    String [] writeList = {"/ws","/mailcode"};
     @Bean
-    public AuthenticationManager authenticationManager() throws Exception {
-        MyDaoAuthenticationProvider daoAuthenticationProvider = new MyDaoAuthenticationProvider();
-        ProviderManager p = new ProviderManager(daoAuthenticationProvider);
+    public AuthenticationManager authenticationManager(
+            MyDaoAuthenticationProvider myDaoAuthenticationProvider,
+            MailCodeAuthenticationProvider mailCodeAuthenticationProvider
+    ) throws Exception {
+        ProviderManager p = new ProviderManager(
+                myDaoAuthenticationProvider,
+                mailCodeAuthenticationProvider);
         return p;
     }
     @Bean
     public SecurityFilterChain configureSecurityFilterChain(HttpSecurity httpSecurity,
         CommonUserNamePasswordAuthenticationFilter userNamePasswordAuthenticationFilter,
         JwtAuthorizationFilter jwtAuthorizationFilter,
+        MailCodeAuthenticationFilter mailCodeAuthenticationFilter,
         LogoutFilter logoutFilter) throws Exception {
         httpSecurity.cors(CorsConfigurer::disable)
                 .sessionManagement(SessionManagementConfigurer::disable)
@@ -57,6 +64,8 @@ public class SecurityConfiguration {
         httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(userNamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         httpSecurity.addFilterBefore(logoutFilter, JwtAuthorizationFilter.class);
+        httpSecurity.addFilterBefore(mailCodeAuthenticationFilter, JwtAuthorizationFilter.class);
+
         DefaultSecurityFilterChain defaultSecurityFilterChain = httpSecurity.build();
         return defaultSecurityFilterChain;
     }

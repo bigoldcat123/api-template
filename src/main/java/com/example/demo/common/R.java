@@ -61,6 +61,14 @@ public class R extends HashMap<String, Object> {
         }
         return r;
     }
+    public static R okShow( String message) {
+        R r = new R(true);
+        r.put(SHOW, SHOW_SUCCESS);
+        if(message != null) {
+            r.put(MESSAGE, message);
+        }
+        return r;
+    }
 
     public static R ok(String msg, Object value) {
         R r = new R(true);

@@ -12,24 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 //another
 
 @SpringBootApplication
-@RestController
 @Slf4j
 public class DemoApplication {
 
-	@GetMapping("path")
-	public String getMethodName(@RequestParam String param) {
-		return new String();
-	}
-	
-
-
 	public static void main(String[] args) {
-
 		ConfigurableApplicationContext run = SpringApplication.run(DemoApplication.class, args);
-		log.debug("abc");
-		log.info("xyz");
-		log.error("eee");
-		System.out.println("start!");
 	}
 
 }
