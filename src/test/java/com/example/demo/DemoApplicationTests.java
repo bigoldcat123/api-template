@@ -4,16 +4,22 @@ import javax.crypto.SecretKey;
 import javax.security.auth.kerberos.EncryptionKey;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import org.springframework.data.redis.core.RedisTemplate;
 
 @SpringBootTest
 class DemoApplicationTests {
 
+	@Autowired
+	RedisTemplate redisTemplate;
 	@Test
 	void contextLoads() {
+		redisTemplate.opsForValue().set("hello", "world");
+		System.out.println(redisTemplate.opsForValue().get("hello"));
 	}
 	public static void main(String[] args) {
 		SecretKey key = Jwts.SIG.HS256.key().build();

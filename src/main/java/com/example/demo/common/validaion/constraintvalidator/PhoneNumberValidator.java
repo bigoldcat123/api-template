@@ -4,7 +4,7 @@ import com.example.demo.common.validaion.constraint.PhoneNumber;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class CustomValidator implements ConstraintValidator<PhoneNumber,String> {
+public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber,String> {
 
     String c;
 

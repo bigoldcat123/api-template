@@ -1,7 +1,7 @@
 package com.example.demo.common.validaion.constraint;
 
 
-import com.example.demo.common.validaion.constraintvalidator.CustomValidator;
+import com.example.demo.common.validaion.constraintvalidator.PhoneNumberValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -13,7 +13,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = CustomValidator. class)// 修改此处即可
+@Constraint(validatedBy = PhoneNumberValidator. class)// 修改此处即可
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 public @interface PhoneNumber {
