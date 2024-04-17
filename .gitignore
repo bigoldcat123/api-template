@@ -4,4 +4,4 @@ target/
 .DS_Store
 *.iml
 
-**/data.properties
+src/main/resources/data.properties
