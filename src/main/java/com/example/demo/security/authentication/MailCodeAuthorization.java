@@ -21,7 +21,7 @@ public class MailCodeAuthorization implements Authentication {
 
     @Override
     public String getName() {
-        return currentUser.getName();
+        return currentUser.getUsername();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MailCodeAuthorization implements Authentication {
 
     @Override
     public Object getDetails() {
-        return null;
+        return currentUser;
     }
 
     //get email

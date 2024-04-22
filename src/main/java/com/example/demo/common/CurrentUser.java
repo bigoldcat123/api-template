@@ -14,12 +14,12 @@ import lombok.NoArgsConstructor;
 public class CurrentUser {
     //TODO add other properties 
     
-    String id;
-    String name;
+    Integer id;
+    String username;
+    String email;
 
     public static CurrentUser get() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CurrentUser currentUser = new CurrentUser(authentication.getPrincipal().toString(),authentication.getName());
-        return currentUser;
+        return (CurrentUser) authentication.getDetails();
     }
 }

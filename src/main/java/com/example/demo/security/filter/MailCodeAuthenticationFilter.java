@@ -6,22 +6,25 @@ import com.example.demo.common.CurrentUserVo;
 import com.example.demo.common.R;
 import com.example.demo.security.authentication.MailCodeAuthorization;
 import com.example.demo.security.jwt.JwtService;
+import com.example.demo.system.entity.UserAuth;
+import com.example.demo.system.service.IUserAuthService;
 import io.micrometer.common.lang.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 @Component
 public class MailCodeAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
+	@Autowired
+	IUserAuthService userAuthService;
 
     public static final String SPRING_SECURITY_FORM_MAIL_KEY = "email";
 
@@ -46,9 +49,10 @@ public class MailCodeAuthenticationFilter extends AbstractAuthenticationProcessi
         setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
-			CurrentUser currentUser = new CurrentUser();
-			currentUser.setId(authentication.getPrincipal().toString());
-			currentUser.setName(authentication.getName());
+
+			UserAuth userAuth = userAuthService.getUserAuthByEmail((String) authentication.getPrincipal());
+
+			CurrentUser currentUser = userAuth.toCurrentUser();
 			CurrentUserVo currentUserVo = new CurrentUserVo(currentUser, JwtService.createToken(currentUser));
             response.getWriter().write(JSON.toJSONString(R.okShow(currentUserVo,R.SHOW_SUCCESS , "登陆成功")));
          });

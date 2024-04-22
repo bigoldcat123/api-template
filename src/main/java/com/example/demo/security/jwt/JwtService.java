@@ -30,8 +30,8 @@ public class JwtService {
         return currentUser;
     }
     public static void main(String[] args) {
-        String token = JwtService.createToken(new CurrentUser("1", "2"));
-        CurrentUser token2 = JwtService.parseToken(token);
-        System.out.println(token2);
+//        String token = JwtService.createToken(new CurrentUser("1", "2"));
+//        CurrentUser token2 = JwtService.parseToken(token);
+//        System.out.println(token2);
     }
 }

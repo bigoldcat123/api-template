@@ -41,32 +41,33 @@ public class SecurityConfiguration {
         return p;
     }
     @Bean
-    public SecurityFilterChain configureSecurityFilterChain(HttpSecurity httpSecurity,
+    public SecurityFilterChain configureSecurityFilterChain(
+        HttpSecurity httpSecurity,
         CommonUserNamePasswordAuthenticationFilter userNamePasswordAuthenticationFilter,
         JwtAuthorizationFilter jwtAuthorizationFilter,
         MailCodeAuthenticationFilter mailCodeAuthenticationFilter,
         LogoutFilter logoutFilter) throws Exception {
-        httpSecurity.cors(CorsConfigurer::disable)
-                .sessionManagement(SessionManagementConfigurer::disable)
-                .logout(LogoutConfigurer::disable)
-                .formLogin(FormLoginConfigurer::disable)
-                .csrf(CsrfConfigurer::disable)
-                .authorizeHttpRequests(config -> config.requestMatchers(writeList).permitAll()
-                        // .requestMatchers("/no/**").hasRole("RR")
-                        // All other API endpoints require authentication.
-                        .anyRequest().authenticated());
+            httpSecurity.cors(CorsConfigurer::disable)
+                    .sessionManagement(SessionManagementConfigurer::disable)
+                    .logout(LogoutConfigurer::disable)
+                    .formLogin(FormLoginConfigurer::disable)
+                    .csrf(CsrfConfigurer::disable)
+                    .authorizeHttpRequests(config -> config.requestMatchers(writeList).permitAll()
+                            // .requestMatchers("/no/**").hasRole("RR")
+                            // All other API endpoints require authentication.
+                            .anyRequest().authenticated());
 
-        httpSecurity.exceptionHandling(exception -> {
-            exception.authenticationEntryPoint(new AuthenticationExceptionHandler());
-            exception.accessDeniedHandler(new AccessDenyExceptionHandler());
-        });
+            httpSecurity.exceptionHandling(exception -> {
+                exception.authenticationEntryPoint(new AuthenticationExceptionHandler());
+                exception.accessDeniedHandler(new AccessDenyExceptionHandler());
+            });
 
-        httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.addFilterBefore(userNamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity.addFilterBefore(logoutFilter, JwtAuthorizationFilter.class);
-        httpSecurity.addFilterBefore(mailCodeAuthenticationFilter, JwtAuthorizationFilter.class);
+            httpSecurity.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+            httpSecurity.addFilterBefore(userNamePasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            httpSecurity.addFilterBefore(logoutFilter, JwtAuthorizationFilter.class);
+            httpSecurity.addFilterBefore(mailCodeAuthenticationFilter, JwtAuthorizationFilter.class);
 
-        DefaultSecurityFilterChain defaultSecurityFilterChain = httpSecurity.build();
-        return defaultSecurityFilterChain;
+            DefaultSecurityFilterChain defaultSecurityFilterChain = httpSecurity.build();
+            return defaultSecurityFilterChain;
     }
 }

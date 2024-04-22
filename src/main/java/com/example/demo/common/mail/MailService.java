@@ -3,6 +3,10 @@ package com.example.demo.common.mail;
 import com.example.demo.common.exception.MailCodeExpiredException;
 import com.example.demo.common.exception.MailCodeNotExpiredException;
 import com.example.demo.common.exception.MailCodeNotMatchException;
+import com.example.demo.common.exception.NoSuchUserException;
+import com.example.demo.common.sender.Sender;
+import com.example.demo.system.entity.UserAuth;
+import com.example.demo.system.service.IUserAuthService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Data;
@@ -27,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class MailService {
+public class MailService implements Sender {
 
     @Value("${spring.mail.username}")
     private String username;
@@ -42,6 +46,9 @@ public class MailService {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    IUserAuthService userAuthService;
+
 
 
     private void sendMail(String to, String subject, String content) throws MessagingException {
@@ -54,6 +61,13 @@ public class MailService {
     }
 
     public void sendCode(String email) {
+        //TODO maybe could register if this user is not registered
+
+        UserAuth userAuth = userAuthService.getUserAuthByEmail(email);
+        if (userAuth == null) {
+            throw new NoSuchUserException("没有该用户😭快去整一个账号吧!👉");
+        }
+
         Boolean notExpired = redisTemplate.hasKey(REDIS_CODE_MAIL + email);
         if (notExpired) {
             throw new MailCodeNotExpiredException("验证吗未过期，请勿重复获取");

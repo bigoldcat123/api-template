@@ -3,6 +3,8 @@ package com.example.demo.security.provider;
 import com.example.demo.common.CurrentUser;
 import com.example.demo.common.mail.MailService;
 import com.example.demo.security.authentication.MailCodeAuthorization;
+import com.example.demo.system.entity.UserAuth;
+import com.example.demo.system.service.IUserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,17 +18,20 @@ public class MailCodeAuthenticationProvider implements AuthenticationProvider {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
     @Autowired
+    IUserAuthService userAuthService;
+    @Autowired
     MailService mailService;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         MailCodeAuthorization mailCodeAuthorization = (MailCodeAuthorization) authentication;
         String email = (String) mailCodeAuthorization.getPrincipal();
         String code = (String) mailCodeAuthorization.getCredentials();
+
         mailService.tryAuthenticate(email,code);
 
         authentication.setAuthenticated(true);
-        // TODO find in DB !
-        mailCodeAuthorization.setCurrentUser(new CurrentUser(email,"mock name"));
+        UserAuth userAuthByEmail = userAuthService.getUserAuthByEmail(email);
+        mailCodeAuthorization.setCurrentUser(new CurrentUser(userAuthByEmail.getId(),userAuthByEmail.getUsername(),userAuthByEmail.getEmail()));
         return authentication;
     }
 

@@ -1,11 +1,14 @@
 package com.example.demo.security.filter;
 
+import com.example.demo.system.entity.UserAuth;
+import com.example.demo.system.service.IUserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
@@ -23,6 +26,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CommonUserNamePasswordAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
+
+	@Autowired
+	IUserAuthService iUserAuthService;
 
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 
@@ -47,9 +53,10 @@ public class CommonUserNamePasswordAuthenticationFilter extends AbstractAuthenti
         setAuthenticationSuccessHandler((request, response, authentication) -> {
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
-			CurrentUser currentUser = new CurrentUser();
-			currentUser.setId(authentication.getPrincipal().toString());
-			currentUser.setName(authentication.getName());
+			UserAuth userAuth = iUserAuthService.getUserAuthByUsername(((User)authentication.getPrincipal()).getUsername());
+
+			CurrentUser currentUser = userAuth.toCurrentUser();
+
 			CurrentUserVo currentUserVo = new CurrentUserVo(currentUser, JwtService.createToken(currentUser));
             response.getWriter().write(JSON.toJSONString(R.okShow(currentUserVo,R.SHOW_SUCCESS , "登陆成功")));
          });

@@ -1,25 +1,18 @@
 package com.example.demo;
 
-import javax.crypto.SecretKey;
-import javax.security.auth.kerberos.EncryptionKey;
-
 import com.example.demo.common.mail.MailService;
-import com.example.demo.system.controller.entity.TestValifacationEntity;
+import com.example.demo.system.entity.UserAuth;
+import com.example.demo.system.entity.test.TestValifacationEntity;
+import com.example.demo.system.service.IUserAuthService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMessageHelper;
 
-import java.io.File;
+import java.util.List;
 
 @SpringBootTest
 class DemoApplicationTests {
@@ -50,7 +43,14 @@ class DemoApplicationTests {
 	MailService mailService;
 	@Test
 	public void mailTest() throws MessagingException {
-
 	}
+	@Autowired
+	IUserAuthService userAuthService;
 
+	@Test
+	public void  t()
+	{
+		List<UserAuth> list = userAuthService.list();
+		System.out.println(list);
+	}
 }

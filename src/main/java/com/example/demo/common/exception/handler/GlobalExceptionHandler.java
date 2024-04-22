@@ -3,6 +3,7 @@ package com.example.demo.common.exception.handler;
 import com.example.demo.common.R;
 import com.example.demo.common.exception.MailCodeNotExpiredException;
 import com.example.demo.common.exception.MailSendFailedException;
+import com.example.demo.common.exception.NoSuchUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +33,10 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(MailSendFailedException.class)
     public R handleMailSendFailedException(MailSendFailedException e) {
+        return R.errorShow(e.getMessage());
+    }
+    @ExceptionHandler(NoSuchUserException.class)
+    public R handleException(NoSuchUserException e) {
         return R.errorShow(e.getMessage());
     }
 }

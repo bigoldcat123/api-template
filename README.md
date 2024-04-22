@@ -4,6 +4,7 @@
 通过filter进行username password 验证。 通过添加 其他filter进行别的验证，
 ### 验证url
 ``/login POST username password form-data``
+``/mailcode POST email code form-data``
 ### 退出登陆
 ``/logout POST headers: {Authorization: Bearer {token}}``
 
@@ -15,4 +16,4 @@
 ``Authorization: bearer {jwttoken}``
 
 ### 未实现->
-邮箱登录, 第三方登录
+第三方登陆
