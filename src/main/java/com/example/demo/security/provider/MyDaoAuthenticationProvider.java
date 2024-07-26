@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class MyDaoAuthenticationProvider extends DaoAuthenticationProvider{
 
     IUserAuthService userAuthService;
+
     static class DaoUserDetailService implements UserDetailsService{
         IUserAuthService userAuthService;
 

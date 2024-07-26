@@ -20,8 +20,9 @@ import lombok.Setter;
  * @author czh
  * @since 2024-04-22
  */
+//TODO 这里是需要修改的
 @Data
-@TableName("user_auth")
+@TableName("_user")
 public class UserAuth implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,13 +32,6 @@ public class UserAuth implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    /**
-     * 创建时间
-     */
-    @TableField("create_time")
-    private LocalDateTime createTime;
-
     /**
      * 用户名
      */
@@ -47,27 +41,38 @@ public class UserAuth implements Serializable {
     /**
      * 密码 默认root
      */
-    @TableField("password")
+    @TableField("psw")
     private String password;
 
     /**
      * 邮箱
      */
-    @TableField("email")
-    private String email;
+    @TableField("_name")
+    private String _name;
 
+    @TableField("sex")
+    private String sex;
     /**
      * 更新事件
      */
-    @TableField("update_time")
-    private LocalDateTime updateTime;
+    @TableField("companyID")
+    private String companyID;
 
+    @TableField("_position")
+    private String position;
+
+    @TableField("phone")
+    private String phone;
+
+
+    @TableField("priv")
+    private String priv;
 
     public CurrentUser toCurrentUser() {
         CurrentUser currentUser = new CurrentUser();
         currentUser.setId(id);
         currentUser.setUsername(username);
-        currentUser.setEmail(email);
+        currentUser.setEmail("email");
         return currentUser;
     }
 

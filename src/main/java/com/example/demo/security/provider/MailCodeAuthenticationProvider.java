@@ -31,7 +31,7 @@ public class MailCodeAuthenticationProvider implements AuthenticationProvider {
 
         authentication.setAuthenticated(true);
         UserAuth userAuthByEmail = userAuthService.getUserAuthByEmail(email);
-        mailCodeAuthorization.setCurrentUser(new CurrentUser(userAuthByEmail.getId(),userAuthByEmail.getUsername(),userAuthByEmail.getEmail()));
+        mailCodeAuthorization.setCurrentUser(userAuthByEmail.toCurrentUser());
         return authentication;
     }
 

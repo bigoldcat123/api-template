@@ -60,6 +60,7 @@ public class CommonUserNamePasswordAuthenticationFilter extends AbstractAuthenti
 			CurrentUserVo currentUserVo = new CurrentUserVo(currentUser, JwtService.createToken(currentUser));
             response.getWriter().write(JSON.toJSONString(R.okShow(currentUserVo,R.SHOW_SUCCESS , "登陆成功")));
          });
+
         setAuthenticationFailureHandler((request, response, exception) -> {
             response.setStatus(200);
             response.setContentType("application/json;charset=UTF-8");
