@@ -2,6 +2,7 @@ package com.example.demo.security;
 
 import java.util.function.Supplier;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.Nullable;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
@@ -17,11 +18,27 @@ import com.example.demo.security.jwt.JwtService;
 @Component
 public class JwtAuthorizationManager implements AuthorizationManager<Object>{
 
+
+    @Value("${spring.profiles.active}")
+    String env;
+    @Value("${devToken}")
+    String devToken;
+
     @Override
     @Nullable
     public AuthorizationDecision check(Supplier<Authentication> authentication,@Nullable Object object) {
         AuthorizationDecision authorizationDecision;
         JwtAuthorization jwtAuthorization = (JwtAuthorization)authentication.get();
+
+        if(env.equals("dev") && jwtAuthorization.getCredentials().equals(devToken)) {
+            jwtAuthorization.setAuthenticated(true);
+            jwtAuthorization.setCurrentUser(new CurrentUser(1,"admin","email"));
+            SecurityContext emptyContext = SecurityContextHolder.createEmptyContext();
+            emptyContext.setAuthentication(jwtAuthorization);
+            SecurityContextHolder.setContext(emptyContext);
+            return new AuthorizationDecision(true);
+        }
+
         try {
             CurrentUser currentUser = JwtService.parseToken(jwtAuthorization.getCredentials().toString());
             jwtAuthorization.setCurrentUser(currentUser);
