@@ -4,7 +4,6 @@ import com.example.demo.common.exception.MailCodeExpiredException;
 import com.example.demo.common.exception.MailCodeNotExpiredException;
 import com.example.demo.common.exception.MailCodeNotMatchException;
 import com.example.demo.common.exception.NoSuchUserException;
-import com.example.demo.common.sender.Sender;
 import com.example.demo.system.entity.UserAuth;
 import com.example.demo.system.service.IUserAuthService;
 import jakarta.mail.MessagingException;
@@ -31,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
-public class MailService implements Sender {
+public class MailService  {
 
     @Value("${spring.mail.username}")
     private String username;
