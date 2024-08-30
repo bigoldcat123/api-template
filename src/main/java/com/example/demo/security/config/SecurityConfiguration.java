@@ -29,6 +29,7 @@ import com.example.demo.security.provider.MyDaoAuthenticationProvider;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+    //TODO add other whitelist
     String [] writeList = {"/ws","/mailcode"};
     @Bean
     public AuthenticationManager authenticationManager(
