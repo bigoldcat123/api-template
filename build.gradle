@@ -15,7 +15,7 @@ java {
 
 repositories {
 	maven{ url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/'}
-	  mavenCentral()
+	//   mavenCentral()
 }
 
 dependencies {
@@ -29,7 +29,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
 	implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.5'
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
