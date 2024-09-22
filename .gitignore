@@ -3,5 +3,7 @@
 target/
 .DS_Store
 *.iml
+.gradle
+build
 
 src/main/resources/application-prod.properties
